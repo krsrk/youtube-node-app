@@ -48,7 +48,11 @@ class VideoRepository {
     }
 
     getAll() {
-        //
+        let params = {
+            TableName: this.TABLE_NAME
+        };
+
+        return dynamoDB.scan(params).promise();
     }
 }
 

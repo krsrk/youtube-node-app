@@ -15,8 +15,11 @@ app.get('/', (req, res) => {
     res.send({"message": "Youtube Videos Api"});
 });
 
-app.get('/show', (req, res) => {
-    res.send({"message": "list of videos"})
+app.get('/show', async (req, res) => {
+    let videoRepository = new VideoRepository();
+    let data = await videoRepository.getAll();
+
+    res.send({"data": data.Items})
 });
 
 app.post('/add/video', async (req, res) => {
