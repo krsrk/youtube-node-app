@@ -1,5 +1,6 @@
 //import {ddbDocClient} from "../dbdocclient";
 const dynamoDB = require("../dbClient");
+const uuid = require("uuid");
 
 class VideoRepository {
     TABLE_NAME = 'videos';
@@ -8,11 +9,11 @@ class VideoRepository {
         console.log("VideoRepository Init ...")
     }
 
-    async add(data) {
+    add(data) {
         const params = {
             Item: {
                 id: {
-                    S: data.id
+                    S: uuid.v4()
                 },
                 video_link: {
                     S:  data.video_link
@@ -30,7 +31,7 @@ class VideoRepository {
                     S:  data.thumbnail
                 },
                 created_at: {
-                    N:  data.created_at.toString()
+                    N:  Date.now().toString()
                 },
             },
             TableName: this.TABLE_NAME,

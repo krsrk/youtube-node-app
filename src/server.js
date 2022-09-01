@@ -5,6 +5,9 @@ const baseUrl = `http://localhost:${port}`
 
 const bodyParser = require('body-parser');
 const VideoRepository = require("./db/repositories/videos");
+const YouTubeUrlHelper = require("./helpers/youTubeUrlHelper")
+const YouTubeApi = require("./services/youtubeApi")
+const YouTubeData = require("./helpers/youTubeData")
 
 app.use(bodyParser.json());
 
@@ -16,24 +19,20 @@ app.get('/show', (req, res) => {
     res.send({"message": "list of videos"})
 });
 
-app.post('/add/video', (req, res) => {
-    //Receive the video link
+app.post('/add/video', async (req, res) => {
+    let youtubeUrl = new YouTubeUrlHelper(req.body.video_link);
 
-    //Get the video id from the link: process the link to find the video id.
+    if (! youtubeUrl.isValidLink()) {
+        res.send({"message": "Invalid Video Link"})
+    }
 
-    //Request the video info from Youtube API:https://www.googleapis.com/youtube/v3/videos?id=ID_DEL_VIDEO&key=API_KEY&part=snippet
-    //Info to store: uuid, link, title(from  youtube api), description(from  youtube api), thumbnail(from  youtube api), creation date
+    let responseData = await new YouTubeApi().makeRequest('/videos?id=' + youtubeUrl.getUrlId())
+    responseData.video_link = req.body.video_link;
+    let youtubeData = new YouTubeData(responseData).getData()
+    let videoRepository = new VideoRepository();
+    let insertedData = videoRepository.add(youtubeData);
 
-    //Store the video in the dynamo db table
-    const videoRepository = new VideoRepository();
-    let data = videoRepository.add({
-        'video_link': 'https://www.youtube.com/watch?v=GD8nCSr54PA',
-        'video_id': 'GD8nCSr54PA',
-        'title': 'Dragon Ball Super: SUPER HERO | OFFICIAL TRAILER 2',
-        'description': 'Dragon Ball Super: SUPER HERO is NOW PLAYING to theaters around the world! More info here! http://2022dbs-global.com',
-        'thumbnail': 'https://lh3.googleusercontent.com/4LpYfns0npTHhbyyT8UOci-_jMh3umLktzE7iHFnQKRpmvk93wcdSBvfR3I3o-IcNa2cltssYZe8mw',
-    });
-    res.send({"message": "Video added", "data": data})
+    res.send({"message": "Video added", "data": insertedData.params.Item})
 });
 
 module.exports = app;
