@@ -4,6 +4,7 @@ let port = process.env.PORT || 8000;
 const baseUrl = `http://localhost:${port}`
 
 const bodyParser = require('body-parser');
+const VideoRepository = require("./db/repositories/videos");
 
 app.use(bodyParser.json());
 
@@ -24,8 +25,15 @@ app.post('/add/video', (req, res) => {
     //Info to store: uuid, link, title(from  youtube api), description(from  youtube api), thumbnail(from  youtube api), creation date
 
     //Store the video in the dynamo db table
-
-    res.send({"message": "Add a video"})
+    const videoRepository = new VideoRepository();
+    let data = videoRepository.add({
+        'video_link': 'https://www.youtube.com/watch?v=GD8nCSr54PA',
+        'video_id': 'GD8nCSr54PA',
+        'title': 'Dragon Ball Super: SUPER HERO | OFFICIAL TRAILER 2',
+        'description': 'Dragon Ball Super: SUPER HERO is NOW PLAYING to theaters around the world! More info here! http://2022dbs-global.com',
+        'thumbnail': 'https://lh3.googleusercontent.com/4LpYfns0npTHhbyyT8UOci-_jMh3umLktzE7iHFnQKRpmvk93wcdSBvfR3I3o-IcNa2cltssYZe8mw',
+    });
+    res.send({"message": "Video added", "data": data})
 });
 
 module.exports = app;
