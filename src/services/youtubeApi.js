@@ -1,7 +1,9 @@
+require('dotenv').config()
+
 const axios = require("axios");
 
 class YoutubeApi {
-    API_KEY = '';
+    API_KEY = process.env.YT_KEY;
     BASE_URL = 'https://www.googleapis.com/youtube/v3';
 
     constructor() {
