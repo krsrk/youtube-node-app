@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 class YoutubeApi {
-    API_KEY = 'AIzaSyBBLembqFSJIDkatM8AU6puH05FSkQhgPE';
+    API_KEY = '';
     BASE_URL = 'https://www.googleapis.com/youtube/v3';
 
     constructor() {
