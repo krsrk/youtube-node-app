@@ -47,6 +47,26 @@ class VideoRepository {
         });
     }
 
+    delete(id) {
+        const params = {
+            Key: {
+                "id": {
+                    S: id
+                },
+            },
+            TableName: this.TABLE_NAME
+        };
+
+        return dynamoDB.deleteItem(params, function (err, data){
+            if (err) {
+                console.log(err, err.stack);
+                return false;
+            } else {
+                return data;
+            }
+        })
+    }
+
     getAll() {
         let params = {
             TableName: this.TABLE_NAME

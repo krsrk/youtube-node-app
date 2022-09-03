@@ -10,6 +10,7 @@ const dynamoDB = new AWS.DynamoDB({
     region: region,
     accessKeyId: accessKeyId,
     secretAccessKey: secretAccessKey,
+    apiVersion: '2012-08-10'
 });
 
 module.exports = dynamoDB;

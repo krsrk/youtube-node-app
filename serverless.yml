@@ -1,4 +1,4 @@
-service: my-youtube-video-list-app
+service: my-youtube-video-list-api
 
 provider:
   name: aws
@@ -14,3 +14,10 @@ functions:
     events:
       - http: ANY {proxy+}
       - http: ANY /
+
+
+Add deploy script to package.json:
+"scripts": {
+  "start": "nodemon local.js",
+  "deploy": "serverless deploy"
+}

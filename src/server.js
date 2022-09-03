@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors')
 const app = express();
 let port = process.env.PORT || 8000;
 const baseUrl = `http://localhost:${port}`
@@ -9,7 +10,7 @@ const YouTubeUrlHelper = require("./helpers/youTubeUrlHelper")
 const YouTubeApi = require("./services/youtubeApi")
 const YouTubeData = require("./helpers/youTubeData")
 
-app.use(bodyParser.json());
+app.use(bodyParser.json(), cors());
 
 app.get('/', (req, res) => {
     res.send({"message": "Youtube Videos Api"});
@@ -37,5 +38,13 @@ app.post('/add/video', async (req, res) => {
 
     res.status(201).send({"message": "Video added", "data": insertedData.params.Item})
 });
+
+app.post('/delete/video', async(req, res) => {
+    let videoId = req.body.video_id
+    let videoRepository = new VideoRepository();
+    let deletedData = videoRepository.delete(videoId);
+
+    res.status(201).send({"message": "Video deleted", "data": deletedData.params.Item})
+})
 
 module.exports = app;
